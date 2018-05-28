@@ -14,22 +14,7 @@ button:disabled {
     color : #C3C3C3;
 }
 
-ul.header {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #e7e7e7;
-}
-         
-li.header {
-    float: left;
-    display: inline-block;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-}
-
-td {
-    text-align: center;
+th, td {
+    text-align: left;
+    border-bottom: 1px solid #ddd;
 }
