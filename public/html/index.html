@@ -1,0 +1,73 @@
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <link rel="stylesheet" type="text/css" href="styles/main.css">
+      <script src="/socket.io/socket.io.js"></script>
+      <script type="text/javascript">
+      	var socket = io();
+
+      	socket.on('connect', function() {
+  			var playerId = socket.io.engine.id;
+  			document.getElementById('playerID').innerHTML = "Player ID: " + playerId;
+
+  			socket.on('recieveGames', function(msg) {
+  				var new_body = document.createElement('tbody');
+  				new_body.id = "games";
+  				for (i=0;i<msg.length;i++) {
+  					var trow = document.createElement('tr');
+  					var tdata = document.createElement('td');
+  					tdata.appendChild(document.createTextNode(msg[i]['id']));
+  					trow.appendChild(tdata);
+  					var tdata = document.createElement('td');
+  					tdata.appendChild(document.createTextNode(msg[i]['players']));
+  					trow.appendChild(tdata);
+  					var tdata = document.createElement('td');
+  					var button = document.createElement('button');
+  					button.appendChild(document.createTextNode('Join'));
+  					tdata.appendChild(button);
+  					trow.appendChild(tdata);
+  					new_body.appendChild(trow);
+  				}
+  				document.getElementById('games').parentNode.replaceChild(new_body, document.getElementById('games'));
+  			});
+
+  			socket.on('gameCreated', function(msg) {
+      			gameData = msg;
+      		});
+
+      		socket.emit('getGames');
+		});
+
+      	window.onload = function() {
+      		document.getElementById('createGame').onclick = function() {
+      			socket.emit('createGame');
+      			this.disabled = true;
+      			socket.emit('getGames');
+      		}
+      	}
+
+      </script>
+   </head>
+   <body>
+
+   	<ul class="header">
+   		<li id="playerID" class="header"></li>
+   	</ul>
+
+   	<table style="width:100%">
+   		<thead>
+   			<tr>
+   				<th>Game ID</th>
+   				<th>Players</th>
+   				<th><button onclick="socket.emit('getGames');">Refresh</button></th>
+   			</tr>
+   		</thead>
+   		<tbody id="games">
+   		</tbody>
+   	</table>
+
+   	<button id='createGame'>Create Game</button>
+   </body>
+</html>

@@ -1,0 +1,35 @@
+body {
+    background-color:#F0F0F0;
+    padding: 2em;
+    font-family: 'Raleway','Source Sans Pro', 'Arial';
+}
+
+button {
+	background-color: #e7e7e7;
+	color: black;
+}
+
+button:disabled {
+    background-color: #F5F5F5;
+    color : #C3C3C3;
+}
+
+ul.header {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #e7e7e7;
+}
+         
+li.header {
+    float: left;
+    display: inline-block;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+td {
+    text-align: center;
+}
