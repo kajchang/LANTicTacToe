@@ -24,6 +24,9 @@ io.on('connection', function(socket) {
 
 	socket.on('page', function(msg) {
 		if (msg['page'] == 'gamefinder') {
+
+			var inGame = false;
+
 			socket.on('createGame', function() {
 				var GameId = Math.floor(Math.random() * 1000);
 				var gameData = {
@@ -41,10 +44,13 @@ io.on('connection', function(socket) {
 
 			socket.on('joinGame', function(msg) {
 				for (i=0; i<Games.length; i++) {
-					if (Games[i]['id'] == msg) {
+					if (Games[i]['id'] == msg && !inGame) {
+
 						Games[i]['players'].push(playerId);
 
 						io.emit('recieveGames', Games)
+
+						inGame = true;
 
 						if (Games[i]['players'].length == 2) {
 							Games[i]['status'] = 'In Game';
@@ -60,7 +66,9 @@ io.on('connection', function(socket) {
 			socket.on('leaveGame', function(msg) {
 				for (i=0; i<Games.length; i++) {
 					if (Games[i]['id'] == msg && Games[i]['players'].includes(playerId)) {
+
 						Games[i]['players'].pop(playerId);
+						inGame = false;
 					}
 				}
 
@@ -69,8 +77,8 @@ io.on('connection', function(socket) {
 
 			socket.on('disconnect', function() {
 				for (i=0; i<Games.length; i++) {
-					if (Games[i]['createdBy'] == playerId) {
-						Games.pop(Games[i]);
+					if (Games[i]['createdBy'] == playerId && Games[i]['status'] == 'Waiting for Players') {
+						Games.splice(i, 1);
 					}
 				}
 
@@ -131,6 +139,7 @@ io.on('connection', function(socket) {
 								this.emit('redirect', 'You Win!');
 
 								socket.to(gameId).emit('redirect', 'You Lose');
+
 								Games[i]['status'] = 'Complete';
 							}
 						}
@@ -139,6 +148,7 @@ io.on('connection', function(socket) {
 							this.emit('redirect', 'You Tied');
 
 							socket.to(gameId).emit('redirect', 'You Tied');
+
 							Games[i]['status'] = 'Complete';
 						}
 					}

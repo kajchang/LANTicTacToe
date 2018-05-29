@@ -8,6 +8,7 @@ socket.on('connect', function() {
     socket.on('recieveGames', function(msg) {
         var new_body = document.createElement('tbody');
         new_body.id = "games";
+        var inGame = false;
 
         for (i = 0; i < msg.length; i++) {
             var trow = document.createElement('tr');
@@ -24,8 +25,9 @@ socket.on('connect', function() {
             var button = document.createElement('button');
 
             if (msg[i]['players'].includes(playerId) && msg[i]['players'].length != 2) {
+                inGame = true;
                 button.appendChild(document.createTextNode('Leave'));
-                button.setAttribute("onClick", "socket.emit('leaveGame', " + msg[i]['id'] + ")");
+                button.setAttribute("onClick", "socket.emit('leaveGame', " + msg[i]['id'] + ");");
             }
 
             else if(msg[i]['players'].includes(playerId) && msg[i]['players'].length == 2) {
@@ -34,7 +36,8 @@ socket.on('connect', function() {
 
             else {
                 button.appendChild(document.createTextNode('Join'));
-                button.setAttribute("onClick", "socket.emit('joinGame', " + msg[i]['id'] + ")");
+                button.className = 'join';
+                button.setAttribute("onClick", "socket.emit('joinGame', " + msg[i]['id'] + ");");
                 if (msg[i]['players'].length == 2) {
                     button.disabled = true;
                 }
@@ -45,6 +48,13 @@ socket.on('connect', function() {
         }
 
         document.getElementById('games').parentNode.replaceChild(new_body, document.getElementById('games'));
+
+        if (inGame) {
+            for (i=0; i<document.getElementsByClassName('join').length; i++) {
+                document.getElementsByClassName('join')[i].disabled = true;
+            }
+        }
+
     });
 });
 
