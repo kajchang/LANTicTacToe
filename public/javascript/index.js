@@ -3,9 +3,12 @@ var socket = io();
 socket.on('connect', function() {
     var playerId = socket.io.engine.id;
 
+    socket.emit('page', {'page': 'gamefinder'})
+
     socket.on('recieveGames', function(msg) {
         var new_body = document.createElement('tbody');
         new_body.id = "games";
+
         for (i = 0; i < msg.length; i++) {
             var trow = document.createElement('tr');
             var tdata = document.createElement('td');
@@ -19,10 +22,16 @@ socket.on('connect', function() {
             trow.appendChild(tdata);
             var tdata = document.createElement('td');
             var button = document.createElement('button');
-            if (msg[i]['players'].includes(playerId)) {
+
+            if (msg[i]['players'].includes(playerId) && msg[i]['players'].length != 2) {
                 button.appendChild(document.createTextNode('Leave'));
                 button.setAttribute("onClick", "socket.emit('leaveGame', " + msg[i]['id'] + ")");
             }
+
+            else if(msg[i]['players'].includes(playerId) && msg[i]['players'].length == 2) {
+                window.location.href = '/game?gameId=' + msg[i]['id'];
+            }
+
             else {
                 button.appendChild(document.createTextNode('Join'));
                 button.setAttribute("onClick", "socket.emit('joinGame', " + msg[i]['id'] + ")");
@@ -34,6 +43,7 @@ socket.on('connect', function() {
             trow.appendChild(tdata);
             new_body.appendChild(trow);
         }
+
         document.getElementById('games').parentNode.replaceChild(new_body, document.getElementById('games'));
     });
 });
