@@ -17,4 +17,5 @@ button:disabled {
 th, td {
     text-align: left;
     border-bottom: 1px solid #ddd;
+    padding: 2em;
 }

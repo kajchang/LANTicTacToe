@@ -4,4 +4,8 @@ Tic-Tac-Toe over LAN using socket.io.
 
 # How to Use
 
-```node server``` while in the directory containing ```server.js```.
+1. Install the required packages: ```npm install```
+
+2. Start the server: ```node server```
+
+3. Navigate to localhost:3000

@@ -13,11 +13,11 @@ app.use("/images", express.static(path.join(__dirname, 'public/images')));
 
 app.get('/' , function(req , res) {
     res.sendFile(path.join(__dirname, 'public/html/index.html'));
-})
+});
 
 app.get('/game', function(req, res) {
 	res.sendFile(path.join(__dirname, 'public/html/game.html'))
-})
+});
 
 io.on('connection', function(socket) {
 	var playerId = socket.id;
@@ -90,13 +90,13 @@ io.on('connection', function(socket) {
 
 		if (msg['page'] == 'game') {
 			var gameId = msg['gameId'];
-			var inGame = false;
+			var gameFound = false;
 
 			for (i=0; i<Games.length; i++) {
 
 					if (Games[i]['id'] == gameId && Games[i]['players'].length < 2) {
 						Games[i]['players'].push(playerId);
-						var inGame = true;
+						var gameFound = true;
 						socket.join(gameId);
 						if (Games[i]['players'].length == 2) {
 							var activePlayer = Games[i]['players'][Math.floor(Math.random() * Games[i]['players'].length)]
@@ -110,12 +110,11 @@ io.on('connection', function(socket) {
 
 					else if (Games[i]['id'] == gameId && Games[i]['status'] == 'In Game' && Games[i]['players'].length == 2) {
 						this.emit('redirect', 'Game Is Full');
-						var inGame = true;
 					}
 			
 				}
 
-			if (!inGame) {
+			if (!gameFound) {
 				this.emit('redirect', 'Game Not Found');
 			}
 
