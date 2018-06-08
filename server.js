@@ -154,7 +154,7 @@ io.on('connection', function(socket) {
 				}
 			});
 
-			socket.on('disconnect', function(msg) {
+			socket.on('disconnect', function() {
 				for (i=0; i<Games.length; i++) {
 					if (Games[i]['id'] == gameId && Games[i]['players'].includes(playerId)) {
 						var Game = Games.pop(Games[i]);
